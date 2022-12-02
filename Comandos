@@ -1,0 +1,94 @@
+	• Exportar conf:   kops get cluster cl01-prd.k8s.cnago.com.br -o yaml
+
+Restartar serviços node fora: service kubelet restart ; service docker restart &
+
+Escalar replicas: $ kubectl -n prod scale deployment gpa-fidelity-accelerator-worker-prod-dlq --replicas=2 
+
+kubectl -n prod get deployments		  
+
+	• Descrever um pod: kubectl describe pod/solr-prod-solr-prd-slave-1 -n prod
+	
+	• Deletar pods evicted: kubectl get pods --all-namespaces| grep Evicted | $(awk '{print "kubectl -n " $1 " delete pod "$2}')
+	• Deletar pods evicted: kubectl get po --all-namespaces --field-selector 'status.phase==Evicted' -o json | kubectl delete -f -
+
+	• Executar comando dentro do pod
+	kubectl exec -n meudesconto-prod -ti gpa-focado-processor-774db7b998-6mn94 -- telnet md-db-processor.fcd.gpa.digital 5432
+	
+Listar espaço em disco solr kubectl -n prod exec -ti solr-prod-solr-prd-slave-2 -c solr-prd-slave -- df -h
+
+
+ kubectl exec -n meudesconto-prod gpa-focado-processor-774db7b998-6mn94 date
+
+	• Conectar no pod com bash: kubectl -n prod exec -t -i solr-prod-solr-prd-slave-1 -c solr-prd-slave  bash (-c é o container que pode ser visto com o describe)
+	kubectl exec -n meudesconto-prod -t -i gpa-focado-processor-774db7b998-6mn94 bash
+	kubectl -n prod exec -ti solr-prod-v2-solr-prd-slave-0 -c solr-prd-slave -- bash
+
+
+	kubectl -n prod exec -ti mongodb-prod-mongodb-replicaset-2 -cmongodb-replicaset -- df -h
+mongodb-prod-mongodb-replicaset-2 -n prod -c mongodb-replicaset
+
+
+
+	• Reciclar os pods 
+kubectl -n NAMESPACE rollout restart deploy DEPLOYMENT
+	kubectl -n prod  rollout restart deploy  gpa-product-integration-prod-gpa-product-integration
+
+
+
+	• Configmaps 
+ kubectl describe configmaps -n meudesconto-prod gpa-focado-web-query
+
+	• Pod's que não estao rodando 
+kubectl get pods --field-selector=status.phase!=Running --all-namespaces
+
+Ou para ver os Running'0/1'
+
+kubectl get pods --all-namespaces |grep '0/1'|grep -v Error |grep -v Evicted |grep -v Completed
+	watch -n 1  "kubectl get pods --all-namespaces |grep '0/1'|grep -v Error |grep -v Evicted |grep -v Completed"
+
+Force delete 
+kubectl delete pod <PODNAME> --grace-period=0 --force --namespace <NAMESPACE>
+
+Port Foward
+kubectl -n prod port-forward gpa-eplataforma-integration-job-ex-96c7dd9f-nb66g 8080:8080
+kubectl -n prod port-forward solr-prod-v2-solr-prd-slave-0 8983:8983 --address 0.0.0.0
+
+Drenar Nodes
+#kubectl drain --ignore-daemonsets --delete-local-data ip-10-250-7-154.sa-east-1.compute.internal --delete-local-data --force
+
+Log de um dos pods:
+kubectl -n meudesconto-prod logs gpa-focado-processor-6bc7656b87-7p686
+Logs de todos os pods
+kubectl -n meudesconto-prod logs -f -lproject=gpa-focado-processor 
+
+Rodar um job manualmente
+kubectl create job <your-new-job-name> --from=cronjob/<name-of-deployed-cron-job> -n <target namespace>
+Ou
+ kubectl -n backup create job --from=cronjob/mongo-dump mongo-dump-manual-00283064
+
+
+Habilitar o autocomplete
+source <(kubectl completion bash) # configuração de autocomplete no bash do shell atual, o pacote bash-completion precisa ter sido instalado primeiro.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # para adicionar o autocomplete permanentemente no seu shell bash.
+
+Query Mongo Backup Erro
+{container="mongo-dump"} |~ "ERROR"
+
+helm list -aq
+
+helm delete redis --purge
+
+
+alias util='kubectl get nodes --no-headers | awk '\''{print $1}'\'' | xargs -I {} sh -c '\''echo {} ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- ; echo '\'''
+
+# Get CPU request total (we x20 because because each m3.large has 2 vcpus (2000m) )
+alias cpualloc='util | grep % | awk '\''{print $1}'\'' | awk '\''{ sum += $1 } END { if (NR > 0) { print sum/(NR*20), "%\n" } }'\'''
+# Get mem request total (we x75 because because each m3.large has 7.5G ram )
+alias memalloc='util | grep % | awk '\''{print $5}'\'' | awk '\''{ sum += $1 } END { if (NR > 0) { print sum/(NR*75), "%\n" } }'\'''
+
+De <https://github.com/kubernetes/kubernetes/issues/17512> 
+
+
+
+
+De <https://github.com/kubernetes/kubernetes/issues/17512> 
