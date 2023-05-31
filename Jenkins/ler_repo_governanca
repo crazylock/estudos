@@ -1,0 +1,54 @@
+Se você deseja que o nome do diretório seja baseado no nome do job no Jenkins, você pode fazer a seguinte modificação no código da biblioteca `githubUtils.groovy`:
+
+```groovy
+def call(String jobName) {
+    pipeline {
+        agent any
+
+        stages {
+            stage('Clone do GitHub') {
+                steps {
+                    git 'https://github.com/seu-usuario/seu-repositorio.git'
+                }
+            }
+
+            stage('Acessar pasta específica') {
+                steps {
+                    dir(jobName) {
+                        // Faça o que for necessário na pasta específica
+                    }
+                }
+            }
+
+            stage('Leitura do arquivo config.yaml') {
+                steps {
+                    script {
+                        def config = readYaml file: "${jobName}/config.yaml"
+                        def dnsName = config.DNS_name
+                        env.DNS_NAME = dnsName
+                    }
+                }
+            }
+        }
+
+        post {
+            always {
+                echo "DNS_NAME: ${env.DNS_NAME}"
+            }
+        }
+    }
+}
+```
+
+Observe a modificação no parâmetro da função `call()`, onde agora é passado um parâmetro `jobName` representando o nome do job no Jenkins.
+
+Agora, ao usar a biblioteca em seu Jenkinsfile ou pipeline, você deve passar o nome do job como argumento da função `githubUtils()`:
+
+```groovy
+@Library('sua-biblioteca') _
+githubUtils('nome-do-job')
+```
+
+Dessa forma, o nome do job será usado para acessar a pasta específica do repositório clonado e ler o arquivo `config.yaml`.
+
+Certifique-se de ajustar a configuração e uso da biblioteca no Jenkins, conforme necessário, para garantir que ela seja corretamente importada e utilizada em seus projetos.
