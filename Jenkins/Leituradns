@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clona o repositório do GitHub
+                git 'https://github.com/seu-usuario/seu-repositorio.git'
+            }
+        }
+        
+        stage('Read endpoints.yaml') {
+            steps {
+                script {
+                    def endpointsYaml = readYaml file: 'caminho/para/endpoints.yaml'
+                    
+                    // Obtém o nome da branch que acionou o pipeline
+                    def branch = env.BRANCH_NAME
+                    
+                    // Verifica se a branch é 'master'
+                    if (branch == 'master') {
+                        // Obtém o valor da variável DSN_master
+                        def deployEndpoint = endpointsYaml.DSN_master
+                        
+                        // Armazena o valor em uma variável chamada DEPLOY_ENDPOINT
+                        env.DEPLOY_ENDPOINT = deployEndpoint
+                        
+                        echo "DEPLOY_ENDPOINT: ${env.DEPLOY_ENDPOINT}"
+                    } else if (branch == 'develop') {
+                        // Faça o que for necessário para a branch 'develop'
+                        // ...
+                    } else {
+                        error "Branch desconhecida: ${branch}"
+                    }
+                }
+            }
+        }
+        
+        // Outros estágios da pipeline
+        // ...
+    }
+}
