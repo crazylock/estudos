@@ -1,0 +1,55 @@
+--
+- name: Migrar disco entre EC2s
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Parar as instâncias EC2 Exemplo1 e Exemplo2
+      ec2_instance:
+        instance_ids: [i-Exemplo1-ID, i-Exemplo2-ID]
+        state: stopped
+      register: stopped_instances
+
+    - name: Desanexar disco secundário das instâncias
+      ec2_vol:
+        instance: "{{ item.instance_id }}"
+        state: detached
+        device_name: /dev/xvdf  # Substitua pelo nome do disco secundário
+      loop: "{{ stopped_instances.instances }}"
+      when: item.state.name == 'stopped'
+
+    - name: Anexar disco à instância Exemplo1
+      ec2_vol:
+        instance: i-Exemplo1-ID
+        volume_id: vol-Disco-ID  # Substitua pelo ID do disco a ser anexado
+        device_name: /dev/xvdf  # Substitua pelo nome do dispositivo
+        state: attached
+      when: stopped_instances.instances[0].state.name == 'stopped'
+
+    - name: Iniciar a instância Exemplo1
+      ec2_instance:
+        instance_ids: [i-Exemplo1-ID]
+        state: started
+      when: stopped_instances.instances[0].state.name == 'stopped'
+
+
+
+      ??????
+
+---
+- name: Migrar disco entre EC2s
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Filtrar fatos das instâncias EC2 pelo nome
+      ec2_instance_facts:
+        filters:
+          "tag:Name": "Nome-Da-Sua-Instância"  # Substitua pelo nome da instância
+      register: ec2_instances
+
+    - name: Parar as instâncias EC2
+      ec2_instance:
+        instance_ids: "{{ ec2_instances.instances | map(attribute='id') | list }}"
+        state: stopped
+      when: ec2_instances.instances | length > 0
+
+    # Restante das tarefas aqui...
