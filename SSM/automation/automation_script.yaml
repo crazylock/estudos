@@ -1,0 +1,40 @@
+{
+   "schemaVersion": "2.2",
+   "description": "Troca de volumes EBS entre instâncias EC2 com variáveis",
+   "mainSteps": [
+      {
+         "action": "aws:runShellScript",
+         "name": "parar-instancias",
+         "inputs": {
+            "runCommand": [
+               "aws ec2 stop-instances --instance-ids {{ InstanceIdSource.Value }} {{ InstanceIdDestination.Value }}"
+            ]
+         }
+      },
+      {
+         "action": "aws:runShellScript",
+         "name": "troca-volumes",
+         "inputs": {
+            "runCommand": [
+               "sudo umount /mnt/volume1",
+               "sudo umount /mnt/volume2",
+               "sudo aws ec2 detach-volume --volume-id {{ VolumeIdSource }} --instance-id {{ InstanceIdSource.Value }}",
+               "sudo aws ec2 detach-volume --volume-id {{ VolumeIdDestination }} --instance-id {{ InstanceIdDestination.Value }}",
+               "sudo aws ec2 attach-volume --volume-id {{ VolumeIdSource }} --instance-id {{ InstanceIdDestination.Value }} --device /dev/xvdf",
+               "sudo aws ec2 attach-volume --volume-id {{ VolumeIdDestination }} --instance-id {{ InstanceIdSource.Value }} --device /dev/xvdf",
+               "sudo mount /dev/xvdf /mnt/volume1",
+               "sudo mount /dev/xvdf /mnt/volume2"
+            ]
+         }
+      },
+      {
+         "action": "aws:runShellScript",
+         "name": "iniciar-instancias",
+         "inputs": {
+            "runCommand": [
+               "aws ec2 start-instances --instance-ids {{ InstanceIdSource.Value }} {{ InstanceIdDestination.Value }}"
+            ]
+         }
+      }
+   ]
+}

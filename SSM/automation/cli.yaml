@@ -1,0 +1,2 @@
+aws ssm put-parameter --name "InstanceIdSource" --value "$(aws ec2 describe-instances --filters "Name=tag:Name,Values=InstanceName1" --query "Reservations[0].Instances[0].InstanceId" --output text)" --type "String"
+aws ssm put-parameter --name "InstanceIdDestination" --value "$(aws ec2 describe-instances --filters "Name=tag:Name,Values=InstanceName2" --query "Reservations[0].Instances[0].InstanceId" --output text)" --type "String"
