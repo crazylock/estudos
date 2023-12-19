@@ -1,22 +1,24 @@
-:
-
-```groovy
 pipeline {
     agent any
+
+    environment {
+        TEMPL_DIR = 'temp_apks'
+        TGZ_FILE = 'apks.tgz'
+        DEST_DIR = 'caminho/para/novo/local/'
+    }
 
     stages {
         stage('Buscar e Copiar APKs') {
             steps {
                 script {
                     // Cria um diretório temporário para armazenar os APKs
-                    def tempDir = 'temp_apks'
-                    dir(tempDir) {
+                    dir(TEMPL_DIR) {
                         // Busca todos os arquivos .apk no workspace
                         def apks = findFiles(glob: '**/*.apk')
 
                         // Copia os APKs para o diretório temporário
                         apks.each { apk ->
-                            bat "copy ${apk} ."
+                            sh "cp ${apk} ."
                         }
                     }
                 }
@@ -27,8 +29,7 @@ pipeline {
             steps {
                 script {
                     // Cria um arquivo TGZ com os APKs
-                    def tgzFile = 'apks.tgz'
-                    bat "tar -czf ${tgzFile} ${tempDir}/*"
+                    sh "tar -czf ${TGZ_FILE} ${TEMPL_DIR}/*"
                 }
             }
         }
@@ -37,9 +38,7 @@ pipeline {
     post {
         success {
             // Move o arquivo TGZ para o diretório desejado
-            bat "move ${tgzFile} caminho/para/novo/local/"
+            sh "mv ${TGZ_FILE} ${DEST_DIR}"
         }
     }
 }
-```
-
