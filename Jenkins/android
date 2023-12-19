@@ -47,3 +47,20 @@ pipeline {
     }
 }
 .
+
+
+
+
+Entendi. Se você quiser buscar em todas as subpastas do workspace, você pode modificar o script para algo assim:
+
+```bash
+#!/bin/bash
+
+# Criar nova pasta para armazenar os arquivos DOC
+mkdir -p /caminho/para/nova/pasta
+
+# Encontrar todos os arquivos com extensão DOC no workspace e suas subpastas e copiá-los para a nova pasta
+find $WORKSPACE -type f -name "*.doc" -exec cp {} /caminho/para/nova/pasta \;
+```
+
+Esse script utiliza o comando `find` para procurar recursivamente por arquivos com extensão `.doc` no diretório especificado pelo `$WORKSPACE` e suas subpastas, copiando-os para a nova pasta. Mais uma vez, ajuste o caminho para a nova pasta conforme necessário.
