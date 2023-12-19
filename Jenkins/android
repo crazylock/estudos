@@ -13,12 +13,15 @@ pipeline {
                 script {
                     // Cria um diretório temporário para armazenar os APKs
                     dir(TEMPL_DIR) {
+                        // Obtém o caminho absoluto do diretório temporário
+                        def absPath = pwd()
+
                         // Busca todos os arquivos .apk no workspace
                         def apks = findFiles(glob: '**/*.apk')
 
                         // Copia os APKs para o diretório temporário
                         apks.each { apk ->
-                            sh "cp ${apk} ."
+                            sh "cp ${absPath}/${apk} ."
                         }
                     }
                 }
@@ -29,7 +32,7 @@ pipeline {
             steps {
                 script {
                     // Cria um arquivo TGZ com os APKs
-                    sh "tar -czf ${TGZ_FILE} ${TEMPL_DIR}/*"
+                    sh "tar -czf ${TGZ_FILE} -C ${TEMPL_DIR} ."
                 }
             }
         }
