@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -31,8 +32,11 @@ pipeline {
         stage('Comprimir APKs em TGZ') {
             steps {
                 script {
-                    // Cria um arquivo TGZ com os APKs
-                    sh "tar -czf ${TGZ_FILE} -C ${TEMPL_DIR} ."
+                    // Entrar novamente no diretório temporário
+                    dir(TEMPL_DIR) {
+                        // Cria um arquivo TGZ com os APKs
+                        sh "tar -czf ${TGZ_FILE} ."
+                    }
                 }
             }
         }
@@ -41,7 +45,7 @@ pipeline {
     post {
         success {
             // Move o arquivo TGZ para o diretório desejado
-            sh "mv ${TGZ_FILE} ${DEST_DIR}"
+            sh "mv ${TEMPL_DIR}/${TGZ_FILE} ${DEST_DIR}"
         }
     }
 }
