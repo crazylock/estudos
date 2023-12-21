@@ -1,0 +1,60 @@
+O arquivo `build.gradle` em um projeto Android contém configurações essenciais para compilar e construir seu aplicativo. Aqui está um exemplo básico para ajudá-lo a começar. Certifique-se de personalizar conforme as necessidades específicas do seu aplicativo:
+
+```gradle
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 30
+    defaultConfig {
+        applicationId "seu.pacote.app"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = false
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    // Adicione outras dependências conforme necessário
+}
+```
+
+Aqui estão algumas explicações sobre as partes importantes deste arquivo:
+
+- `applicationId`: Substitua pelo ID do seu aplicativo. Geralmente, é algo como "com.example.myapp".
+- `minSdkVersion` e `targetSdkVersion`: Defina as versões mínima e alvo do Android para o seu aplicativo.
+- `versionCode` e `versionName`: Números de versão do seu aplicativo.
+- `buildTypes`: Configurações específicas para tipos de build (como release ou debug).
+- `bundle`: Configurações específicas para Android App Bundle.
+
+Depois de configurar o arquivo `build.gradle`, você pode executar o comando Gradle para construir o Android App Bundle (AAB):
+
+```bash
+./gradlew bundleRelease
+```
+
+Este comando irá gerar o arquivo AAB na pasta `app/build/outputs/bundle/release/`.
+
+Certifique-se de personalizar ainda mais o arquivo `build.gradle` de acordo com as necessidades específicas do seu aplicativo e suas dependências.
