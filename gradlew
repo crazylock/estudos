@@ -1,53 +1,23 @@
-**Documentação Gradlew: Comandos Build, Bundle e Assemble**
+Para montar o `gradlew` em um projeto Android, você precisa ter o Gradle instalado. Se o projeto já contém um wrapper `gradlew`, você pode executar comandos Gradle usando esse script. Se não existir, você pode gerá-lo usando o comando:
 
-## Introdução
-
-O Gradlew é uma ferramenta de linha de comando usada para automatizar tarefas relacionadas ao projeto usando o sistema de construção Gradle. Nesta documentação, exploraremos as diferenças entre os comandos `build`, `bundle` e `assemble`, fornecendo exemplos e detalhando os parâmetros utilizáveis.
-
-## Comando `build`
-
-O comando `build` no Gradlew é usado para compilar, testar e construir o projeto. Ele realiza todas as etapas necessárias para criar o artefato final, geralmente um arquivo JAR ou APK, dependendo do tipo de projeto.
-
-### Exemplo:
 ```bash
-./gradlew build
+gradle wrapper
 ```
 
-Este comando compila o código-fonte, executa os testes, e gera o artefato final.
+Depois de executar este comando, será criado um diretório `gradle/wrapper` com arquivos como `gradle-wrapper.properties` e `gradle-wrapper.jar`. O script `gradlew` (ou `gradlew.bat` no Windows) será criado na raiz do seu projeto. Agora, você pode usar o `gradlew` para executar tarefas Gradle sem a necessidade de ter o Gradle instalado globalmente.
 
-### Parâmetros úteis:
-- `--info`: Fornece informações detalhadas durante a execução.
-- `--stacktrace`: Exibe a pilha de rastreamento em caso de erros.
+Para executar um comando usando `gradlew`, você pode usar o seguinte formato no terminal:
 
-## Comando `bundle`
-
-O comando `bundle` é específico para projetos Android e é usado para criar um arquivo de bundle. O arquivo de bundle contém informações otimizadas para a distribuição de aplicativos Android na Play Store.
-
-### Exemplo:
 ```bash
-./gradlew bundle
+./gradlew <comando>
 ```
 
-Este comando cria um arquivo de bundle na pasta `build/outputs/bundle`.
+Substitua `<comando>` pela tarefa Gradle específica que você deseja executar, por exemplo, `assembleDebug` para compilar uma versão de depuração do seu aplicativo Android.
 
-### Parâmetros úteis:
-- `--flavor <nome_do_sabor>`: Especifica o sabor a ser construído.
+Certifique-se de que o script `gradlew` tenha permissões de execução. Se não tiver, você pode concedê-las com o comando:
 
-## Comando `assemble`
-
-O comando `assemble` é usado para criar versões específicas do aplicativo para diferentes configurações, sabores ou variantes.
-
-### Exemplo:
 ```bash
-./gradlew assembleDebug
+chmod +x gradlew
 ```
 
-Este comando cria uma versão de depuração do aplicativo.
-
-### Parâmetros úteis:
-- `--offline`: Realiza a construção sem acessar a internet.
-- `--scan`: Gera um link para um relatório de construção online.
-
-## Conclusão
-
-Em resumo, o `build` é usado para construir o projeto geral, `bundle` é específico para projetos Android para criar bundles otimizados, e `assemble` é utilizado para construir versões específicas do aplicativo. Utilize os parâmetros mencionados para personalizar e otimizar a construção de acordo com suas necessidades.
+Isso deve ajudar você a montar o `gradlew` no seu projeto Android.
