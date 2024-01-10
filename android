@@ -1,0 +1,69 @@
+Para gerar um APK via linha de comando, você geralmente usará o Android Studio e o Gradle. Aqui está um exemplo básico de como você pode fazer isso:
+
+1. Navegue até o diretório do seu projeto Android no terminal.
+
+2. Execute o seguinte comando para construir o APK:
+
+```bash
+./gradlew assembleDebug
+```
+
+ou para uma versão de lançamento:
+
+```bash
+./gradlew assembleRelease
+```
+
+3. Após a conclusão, você pode encontrar o APK gerado no diretório `app/build/outputs/apk/debug/` para versões de depuração ou `app/build/outputs/apk/release/` para versões de lançamento.
+
+Certifique-se de ter o Android Studio instalado e configurado corretamente para usar o Gradle na linha de comando. Este exemplo supõe que você está usando o Gradle Wrapper (`gradlew`).
+
+
+Para gerar um APK (Android Package) e um AAB (Android App Bundle) ao mesmo tempo via linha de comando, você pode usar o seguinte comando B
+ gerado estará no diretório `app/build/outputs/apk/release/`.
+
+Lembre-se de ajustar "Release" de acordo com a configuração de compilação que você está usando (por exemplo, "Debug" para builds de depuração). Certifique-se de ter configurado corretamente suas opções de assinatura para construções de lançamento.
+
+Para gerar um arquivo Android App Bundle (AAB) via linha de comando usando o Gradle, você pode utilizar o seguinte comando:
+
+```bash
+./gradlew bundleRelease
+```
+
+Este comando compilará e gerará um arquivo AAB na pasta `app/build/outputs/bundle/release/`.
+
+Certifique-se de ajustar "Release" de acordo com a configuração de compilação desejada (por exemplo, "Debug" para builds de depuração). Certifique-se também de ter configurado corretamente suas opções de assinatura para construções de lançamento, já que o AAB é comumente usado para gerar APKs assinados durante o processo de publicação na Play Store.
+
+`./gradlew build` e `./gradlew assemble` são dois comandos Gradle usados para compilar e construir um projeto. No entanto, há uma diferença sutil entre eles:
+
+1. **`./gradlew build`**: Este comando compila e constrói o projeto, gerando os artefatos de compilação, mas não gera artefatos de distribuição específicos, como APKs ou AABs (Android App Bundles). É útil durante o desenvolvimento para verificar erros de compilação e garantir que o código seja compilado corretamente.
+
+2. **`./gradlew assemble`**: Este comando também compila e constrói o projeto, mas ele gera os artefatos de distribuição específicos para cada configuração de compilação. Por exemplo, `assembleDebug` gera um APK de depuração, e `assembleRelease` gera um APK ou AAB assinado para lançamento. O comando `./gradlew assemble` pode ser usado para gerar todos os artefatos de distribuição disponíveis para o projeto.
+
+Em resumo, `./gradlew build` foca na compilação e construção do código, enquanto `./gradlew assemble` vai além, gerando artefatos específicos de distribuição para diferentes configurações de compilação.
+
+As opções de `assemble` em um projeto Android geralmente estão associadas às diferentes configurações de compilação, como `debug` e `release`. A forma básica é `assemble<BuildType>`, onde `<BuildType>` é substituído por `Debug`, `Release`, ou outro nome de configuração que você tenha definido em seu arquivo de configuração `build.gradle`.
+
+Alguns exemplos comuns incluem:
+
+- **assembleDebug**: Gera uma versão de depuração do APK.
+- **assembleRelease**: Gera uma versão de lançamento do APK, geralmente assinado para distribuição.
+- **assemble**: Pode ser usado para gerar todos os artefatos de distribuição disponíveis no projeto.
+
+Além disso, se você tiver diferentes flavors em seu projeto, os comandos de assemble podem ser estendidos para incluir esses flavors. Por exemplo:
+
+- **assembleDebugFlavor1**: Gera uma versão de depuração para um flavor específico.
+- **assembleReleaseFlavor1**: Gera uma versão de lançamento para um flavor específico.
+
+Lembre-se de ajustar esses comandos de acordo com a estrutura específica do seu projeto e quaisquer configurações personalizadas que você tenha feito no arquivo `build.gradle`.
+
+
+
+
+`./gradlew build` e `./gradlew assemble` são dois comandos Gradle usados para compilar e construir um projeto. No entanto, há uma diferença sutil entre eles:
+
+1. **`./gradlew build`**: Este comando compila e constrói o projeto, gerando os artefatos de compilação, mas não gera artefatos de distribuição específicos, como APKs ou AABs (Android App Bundles). É útil durante o desenvolvimento para verificar erros de compilação e garantir que o código seja compilado corretamente.
+
+2. **`./gradlew assemble`**: Este comando também compila e constrói o projeto, mas ele gera os artefatos de distribuição específicos para cada configuração de compilação. Por exemplo, `assembleDebug` gera um APK de depuração, e `assembleRelease` gera um APK ou AAB assinado para lançamento. O comando `./gradlew assemble` pode ser usado para gerar todos os artefatos de distribuição disponíveis para o projeto.
+
+Em resumo, `./gradlew build` foca na compilação e construção do código, enquanto `./gradlew assemble` vai além, gerando artefatos específicos de distribuição para diferentes configurações de compilação.
