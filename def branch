@@ -1,0 +1,62 @@
+No Jenkins Pipeline usando Groovy, não existe uma construção `switch` diretamente disponível. No entanto, você pode usar uma abordagem de lista de correspondência para obter um comportamento semelhante. Aqui está um exemplo com a substituição do bloco `if` por uma lista de correspondência:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Set Environment Variables') {
+            steps {
+                script {
+                    def branchName = env.BRANCH_NAME
+                    env.ENVIRONMENT = getEnvironmentForBranch(branchName)
+                }
+            }
+        }
+
+        stage('Validation') {
+            when {
+                expression { env.ENVIRONMENT in ['feature', 'dev'] }
+            }
+            steps {
+                // Passos de validação para branches feature ou develop
+            }
+        }
+
+        stage('Validation and Build') {
+            when {
+                expression { env.BRANCH_NAME == 'develop' }
+            }
+            steps {
+                // Passos de validação para a branch de develop
+                // Adicione os passos de build aqui
+            }
+        }
+
+        stage('Build and Deploy') {
+            when {
+                expression { env.ENVIRONMENT == 'prod' }
+            }
+            steps {
+                // Passos de build para a branch main ou master
+                // Adicione os passos de deploy aqui
+            }
+        }
+    }
+
+    def getEnvironmentForBranch(branchName) {
+        switch (branchName) {
+            case { it.startsWith('feature') }:
+                return 'feature'
+            case 'develop':
+                return 'dev'
+            case { it in ['main', 'master'] }:
+                return 'prod'
+            default:
+                return 'unknown'
+        }
+    }
+}
+```
+
+Neste exemplo, a função `getEnvironmentForBranch` atua como uma lista de correspondência simulada usando expressões lambda para verificar as condições. Isso torna o código mais conciso do que encadeamentos de `if-else`. Personalize conforme necessário para atender aos requisitos específicos do seu projeto.
