@@ -1,0 +1,16 @@
+name: Build Application
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: <seu-usuario-github>/reusable-workflows/.github/workflows/maven-build.yml@main
+    with:
+      java-version: '17'
+      maven-goals: 'clean package'
