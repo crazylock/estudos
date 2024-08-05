@@ -1,0 +1,29 @@
+name: Maven Build
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'The version of Java to use'
+        required: true
+        default: '11'
+      maven-goals:
+        description: 'Maven goals to run'
+        required: true
+        default: 'clean install'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+
+      - name: Build with Maven
+        run: mvn ${{ inputs.maven-goals }}
